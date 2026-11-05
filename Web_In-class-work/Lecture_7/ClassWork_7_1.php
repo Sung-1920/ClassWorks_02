@@ -1,55 +1,63 @@
 <?php
-    if(isset($_POST['f-text'])){
-        $txt = $_POST['f-text'];
+if (isset($_POST['quantity']) && isset($_POST['maximum'])) {
 
-        $ff = fopen("drive/test-1.txt", "a");
-        fwrite($ff, $txt . PHP_EOL);
-        fclose($ff);
-    }
+    $quantity = $_POST['quantity'];
+    $maximum = $_POST['maximum'];
 
-    if(isset($_POST['read'])){
-        $f = file("drive/data.txt");
+    $randomNumbers = [];
+    $sum = 0;
 
-        // echo "<pre>";
-        // print_r($f);
-        // echo "</pre>";
+    if ($quantity >= 2 && $maximum >= 1) {
 
-        for($i = 0; $i < count($f); $i++){
-            echo "<pre>";
-            print_r($f[$i]);
-            echo "</pre>";
+        for ($i = 0; $i < $quantity; $i++) {
+            $random = rand(1, $maximum);
+
+            $randomNumbers[] = $random;
+            $sum += $random;
         }
+
+        $average = $sum / $quantity;
+
+        $result = "რანდომ რიცხვები: ";
+
+        foreach ($randomNumbers as $number) {
+            $result .= $number . ", ";
+        }
+
+        $result .= "\nსაშუალო არითმეტიკული: " . $average;
+
+        echo $result;
+
+        file_put_contents('log.txt', $result . PHP_EOL, FILE_APPEND);
+    } else {
+        echo "რაოდენობა უნდა იყოს მინიმუმ 2!";
     }
+}
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ka">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lecture_7</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Lecture 8</title>
 </head>
 <body>
-    <div class="container">
-        <h1>ფაილებთან მუშაობა</h1>
-        <form method="post">
 
-            <label>Please Write Something ...</label>
+    <h1>შემთხვევითი რიცხვების გენერირება</h1>
 
-            <textarea name="f-text" rows="10" calls="10" placeholder="Please Write Something ..."></textarea>
-            <br> <br>
-            <button>Click For Save</button>
-            
-        </form>
+    <form method="POST">
+        <label>შეიყვანეთ რიცხვების რაოდენობა (მინიმუმ 2):</label>
+        <input type="number" name="quantity" min="2" required>
 
-        <h2>ფაილის წაშლა</h2>
-        <form method="post">
-            <button name="read">Read File</button>
-        </form>
-        
-        <div class="file">
+        <br><br>
 
-        </div>
+        <label>შეიყვანეთ მაქსიმალური რიცხვი:</label>
+        <input type="number" name="maximum" min="1" required>
+
+        <br><br>
+
+        <button type="submit">გენერირება</button>
+    </form>
+
 </body>
 </html>
